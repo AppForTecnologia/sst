@@ -1,16 +1,13 @@
 import React from 'react';
-import { Bell, User, Search, Menu } from 'lucide-react';
+import { Bell, User, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export function Header({ onToggleSidebar }) {
+export function Header() {
   return (
     <header className="bg-background border-b border-border px-4 md:px-6 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2 md:space-x-4 flex-1">
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={onToggleSidebar}>
-            <Menu className="h-6 w-6" />
-          </Button>
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input

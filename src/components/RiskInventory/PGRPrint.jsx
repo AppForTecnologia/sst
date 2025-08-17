@@ -26,14 +26,6 @@ export const PGRPrint = forwardRef(({ inventory, company, onClose, onPrint }, re
     onPrint();
   }, [onPrint]);
 
-  const getProtectionMeasureNames = (ids) => {
-    if (!ids || ids.length === 0) return 'N/A';
-    return ids.map(id => {
-      const measure = protectionMeasures.find(m => m.id === id);
-      return measure ? measure.name : '';
-    }).filter(Boolean).join('; ');
-  };
-
   const getInjuryNames = (ids) => {
     if (!ids || ids.length === 0) return 'N/A';
     return ids.map(id => {
@@ -281,10 +273,32 @@ export const PGRPrint = forwardRef(({ inventory, company, onClose, onPrint }, re
                 inventory.risks.map(risk => (
                   <tr key={risk.id}>
                     <td>{risk.sectorName}</td>
-                    <td>{risk.functionName || 'N/A'}</td>
+                    <td>{risk.functionNames?.join(', ') || 'N/A'}</td>
                     <td><strong>{risk.sourceName}:</strong> {risk.dangerName}</td>
                     <td>{risk.description || '-'}</td>
-                    <td>{getProtectionMeasureNames(risk.protectionMeasureIds)}</td>
+                    <td>
+                      {risk.protectionMeasures && risk.protectionMeasures.length > 0 ? (
+                        <div className="space-y-1">
+                          {risk.protectionMeasures.map((measure, idx) => (
+                            <div key={idx} className="text-xs">
+                              <span className="font-medium">{measure.measureName}</span>
+                              <span className={`ml-1 px-1 py-0.5 rounded text-xs ${
+                                measure.implementationStatus === 'yes' ? 'bg-green-100 text-green-800' :
+                                measure.implementationStatus === 'no' ? 'bg-red-100 text-red-800' :
+                                measure.implementationStatus === 'not_applicable' ? 'bg-gray-100 text-gray-800' :
+                                'bg-blue-100 text-blue-800'
+                              }`}>
+                                {measure.implementationStatus === 'yes' ? 'Sim' : 
+                                 measure.implementationStatus === 'no' ? 'Não' : 
+                                 measure.implementationStatus === 'not_applicable' ? 'N/A' : 'Selecionar'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        'Nenhuma medida definida'
+                      )}
+                    </td>
                     <td>{getInjuryNames(risk.injuryIds)}</td>
                     <td>{risk.probability}</td>
                     <td>{risk.severity}</td>
@@ -318,7 +332,21 @@ export const PGRPrint = forwardRef(({ inventory, company, onClose, onPrint }, re
                   <tr key={risk.id}>
                     <td>{risk.riskLevel.level}</td>
                     <td>{risk.dangerName}</td>
-                    <td>{getProtectionMeasureNames(risk.protectionMeasureIds)}</td>
+                    <td>
+                      {risk.protectionMeasures && risk.protectionMeasures.length > 0 ? (
+                        <div className="space-y-1">
+                          {risk.protectionMeasures
+                            .filter(measure => measure.implementationStatus === 'yes')
+                            .map((measure, idx) => (
+                              <div key={idx} className="text-xs">
+                                <span className="font-medium">{measure.measureName}</span>
+                              </div>
+                            ))}
+                        </div>
+                      ) : (
+                        'Nenhuma medida a implementar'
+                      )}
+                    </td>
                     <td>Imediato/Contínuo</td>
                     <td>Empresa</td>
                   </tr>

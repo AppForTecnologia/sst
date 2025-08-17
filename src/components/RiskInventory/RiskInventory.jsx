@@ -226,7 +226,7 @@ export function RiskInventory() {
         probability,
         severity,
         technicalResponsible: '',
-        protectionMeasureIds: details?.protection_measure_ids || [],
+        protectionMeasures: [], // Initialize protectionMeasures
         injuryIds: details?.injury_ids || [],
         sectorName: 'A definir',
         functionNames: [],
@@ -434,6 +434,33 @@ export function RiskInventory() {
 
                         {risk.description && (
                           <p className="text-sm text-foreground/90 mb-3">{risk.description}</p>
+                        )}
+
+                        {/* Medidas de Proteção com Status */}
+                        {risk.protectionMeasures && risk.protectionMeasures.length > 0 && (
+                          <div className="mb-3">
+                            <h5 className="text-sm font-medium text-foreground mb-2">Medidas de Proteção:</h5>
+                            <div className="space-y-2">
+                              {risk.protectionMeasures.map((measure, idx) => (
+                                <div key={idx} className="flex items-center gap-2 text-xs">
+                                  <Shield className="h-3 w-3 text-blue-500" />
+                                  <span className="text-foreground">{measure.measureName}</span>
+                                  <Badge 
+                                    variant="outline" 
+                                    className={`
+                                      ${measure.implementationStatus === 'yes' ? 'bg-green-100 text-green-800 border-green-200' : ''}
+                                      ${measure.implementationStatus === 'no' ? 'bg-red-100 text-red-800 border-red-200' : ''}
+                                      ${measure.implementationStatus === 'not_applicable' ? 'bg-gray-100 text-gray-800 border-gray-200' : ''}
+                                    `}
+                                  >
+                                    {measure.implementationStatus === 'yes' ? 'Sim' : 
+                                     measure.implementationStatus === 'no' ? 'Não' : 
+                                     measure.implementationStatus === 'not_applicable' ? 'N/A' : 'Pendente'}
+                                  </Badge>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         )}
 
                         <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">

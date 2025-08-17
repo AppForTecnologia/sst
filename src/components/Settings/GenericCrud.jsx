@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
 import { Plus, Edit, Trash2 } from 'lucide-react';
@@ -26,8 +27,24 @@ export function GenericCrud({ title, tableName, columns }) {
 
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [selectOptions, setSelectOptions] = useState({});
 
   const singularTitle = title.endsWith('es') ? title.slice(0, -2) : (title.endsWith('s') ? title.slice(0, -1) : title);
+
+  // Buscar opções para campos select
+  useEffect(() => {
+    const options = {};
+    columns.forEach(column => {
+      if (column.type === 'select' && column.reference) {
+        const referenceData = dataMap[column.reference]?.data || [];
+        options[column.name] = referenceData.map(item => ({
+          value: item.id,
+          label: item[column.displayField || 'name']
+        }));
+      }
+    });
+    setSelectOptions(options);
+  }, [columns, dataMap]);
 
   const resetForm = () => {
     let initialState = {};
@@ -71,17 +88,36 @@ export function GenericCrud({ title, tableName, columns }) {
 
   const renderInput = (column) => {
     const value = formData[column.name] || '';
+    
     if (column.type === 'select') {
+      const options = selectOptions[column.name] || [];
       return (
         <Select
           value={value}
-          onChange={(e) => setFormData({ ...formData, [column.name]: e.target.value })}
+          onChange={(e) => setFormData({ ...formData, [column.name]: parseInt(e.target.value) || '' })}
         >
-          <option value="">{column.placeholder}</option>
-          {column.options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+          <option value="">{column.placeholder || 'Selecione...'}</option>
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </Select>
       );
     }
+    
+    if (column.type === 'textarea') {
+      return (
+        <Textarea
+          placeholder={column.label}
+          value={value}
+          onChange={(e) => setFormData({ ...formData, [column.name]: e.target.value })}
+          required={column.required || false}
+          rows={4}
+        />
+      );
+    }
+    
     return (
       <Input
         type={column.type || 'text'}
@@ -91,6 +127,15 @@ export function GenericCrud({ title, tableName, columns }) {
         required={column.required || false}
       />
     );
+  };
+
+  const getDisplayValue = (item, column) => {
+    if (column.type === 'select' && column.reference) {
+      const options = selectOptions[column.name] || [];
+      const option = options.find(opt => opt.value === item[column.name]);
+      return option ? option.label : 'N/A';
+    }
+    return item[column.name] || '';
   };
 
   return (
@@ -130,10 +175,19 @@ export function GenericCrud({ title, tableName, columns }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
               >
-                <span className="font-medium">
-                  {columns.map(c => item[c.name]).filter(Boolean).join(' - ')}
-                </span>
-                <div className="flex items-center space-x-2">
+                <div className="flex-1">
+                  {columns.map((col, index) => {
+                    const value = getDisplayValue(item, col);
+                    if (!value) return null;
+                    return (
+                      <span key={col.name} className="block text-sm">
+                        <span className="font-medium text-muted-foreground">{col.label}:</span> {value}
+                        {index < columns.length - 1 && <br />}
+                      </span>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center space-x-2 ml-4">
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}>
                     <Edit className="h-4 w-4" />
                   </Button>

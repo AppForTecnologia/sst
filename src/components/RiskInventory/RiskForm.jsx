@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MultiSelectCombobox } from '@/components/ui/MultiSelectCombobox';
+import { ProtectionMeasuresSelector } from './ProtectionMeasuresSelector';
 import { useData } from '@/contexts/DataContext';
 import { PROBABILITY_LEVELS, SEVERITY_LEVELS } from '@/data/mockData';
 import { calculateRiskLevel } from '@/utils/riskCalculations';
@@ -25,7 +26,7 @@ export function RiskForm({ risk, sectors, functions, onSave, onCancel }) {
     probability: risk?.probability || 1,
     severity: risk?.severity || 1,
     technicalResponsible: risk?.technicalResponsible || '',
-    protectionMeasureIds: risk?.protectionMeasureIds || [],
+    protectionMeasures: risk?.protectionMeasures || [], // Nova estrutura
     injuryIds: risk?.injuryIds || []
   });
 
@@ -150,12 +151,13 @@ export function RiskForm({ risk, sectors, functions, onSave, onCancel }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-subtitle-foreground mb-2">Medidas de Proteção</label>
-              <MultiSelectCombobox
-                options={protectionMeasures}
-                selected={formData.protectionMeasureIds}
-                onChange={(selectedIds) => handleChange('protectionMeasureIds', selectedIds)}
-                placeholder="Selecione as medidas..."
+              <label className="block text-sm font-medium text-subtitle-foreground mb-2">
+                Medidas de Proteção com Status de Implementação
+              </label>
+              <ProtectionMeasuresSelector
+                availableMeasures={protectionMeasures}
+                selectedMeasures={formData.protectionMeasures}
+                onChange={(measures) => handleChange('protectionMeasures', measures)}
               />
             </div>
 

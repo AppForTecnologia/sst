@@ -4,9 +4,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GenericCrud } from './GenericCrud';
 import { GenericCompanyBoundCrud } from './GenericCompanyBoundCrud';
 import { SectorsManagement } from './SectorsManagement';
+import { DangerGroupList } from '../DangerGroups/DangerGroupList';
 
 const settingsTabs = [
   { value: 'segments', label: 'Segmentos', component: GenericCrud, props: { title: 'Segmentos', tableName: 'segments', columns: [{ name: 'name', label: 'Nome do Segmento', required: true }] } },
+  { 
+    value: 'danger_groups', 
+    label: 'Grupos de Perigos', 
+    component: DangerGroupList, 
+    props: {} 
+  },
   { 
     value: 'dangers', 
     label: 'Perigos', 
@@ -16,7 +23,16 @@ const settingsTabs = [
       tableName: 'dangers', 
       columns: [
         { name: 'name', label: 'Nome do Perigo', required: true },
-        { name: 'group_id', label: 'Grupo', type: 'select', reference: 'danger_groups', displayField: 'name', required: true },
+        { 
+          name: 'group_id', 
+          label: 'Grupo', 
+          type: 'select', 
+          reference: 'danger_groups', 
+          displayField: 'name', 
+          required: true,
+          placeholder: 'Selecione um grupo',
+          options: [] // Será preenchido dinamicamente
+        },
         { name: 'description', label: 'Descrição', type: 'textarea' }
       ]
     } 
@@ -37,7 +53,7 @@ export function Settings() {
       </div>
 
       <Tabs defaultValue="segments" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8">
           {settingsTabs.map(tab => (
             <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
           ))}
