@@ -1,0 +1,2 @@
+## Pages
+- [SST em Destaque - Segurança e Medicina do Trabalho](/): Sistema completo para gestão de Segurança e Medicina do Trabalho (SST), incluindo a geração e atualização do Programa de Gerenciamento de Riscos (PGR) conforme NR-01. Gerencie empresas, funcionários, inventários de risco e gere relatórios profissionais.

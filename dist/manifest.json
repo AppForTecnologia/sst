@@ -1,0 +1,27 @@
+{
+  "name": "SST em Destaque",
+  "short_name": "SST Destaque",
+  "description": "Sistema completo para gestão de Segurança e Medicina do Trabalho (SST), incluindo a geração e atualização do Programa de Gerenciamento de Riscos (PGR) conforme NR-01.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/maskable_icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

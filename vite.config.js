@@ -6,8 +6,12 @@ const isDev = process.env.NODE_ENV !== 'production';
 let inlineEditPlugin, editModeDevPlugin;
 
 if (isDev) {
-	inlineEditPlugin = (await import('./plugins/visual-editor/vite-plugin-react-inline-editor.js')).default;
-	editModeDevPlugin = (await import('./plugins/visual-editor/vite-plugin-edit-mode.js')).default;
+	try {
+		inlineEditPlugin = (await import('./plugins/visual-editor/vite-plugin-react-inline-editor.js')).default;
+		editModeDevPlugin = (await import('./plugins/visual-editor/vite-plugin-edit-mode.js')).default;
+	} catch (error) {
+		console.warn('Visual editor plugins not available in production');
+	}
 }
 
 const configHorizonsViteErrorHandler = `
@@ -192,9 +196,9 @@ logger.error = (msg, options) => {
 export default defineConfig({
 	customLogger: logger,
 	plugins: [
-		...(isDev ? [inlineEditPlugin(), editModeDevPlugin()] : []),
+		...(isDev && inlineEditPlugin && editModeDevPlugin ? [inlineEditPlugin(), editModeDevPlugin()] : []),
 		react(),
-		addTransformIndexHtml
+		...(isDev ? [addTransformIndexHtml] : [])
 	],
 	server: {
 		cors: true,
@@ -217,6 +221,12 @@ export default defineConfig({
 				'@babel/generator',
 				'@babel/types'
 			]
-		}
+		},
+		// Otimizações para produção
+		minify: 'terser',
+		sourcemap: false,
+		chunkSizeWarningLimit: 1000,
+		// Garante que o build seja compatível com a Vercel
+		target: 'es2015'
 	}
 });
