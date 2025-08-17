@@ -220,13 +220,23 @@ export default defineConfig({
 				'@babel/traverse',
 				'@babel/generator',
 				'@babel/types'
-			]
+			],
+			output: {
+				// Garante nomes de arquivos consistentes
+				entryFileNames: 'assets/[name]-[hash].js',
+				chunkFileNames: 'assets/[name]-[hash].js',
+				assetFileNames: 'assets/[name]-[hash].[ext]'
+			}
 		},
 		// Otimizações para produção
 		minify: 'terser',
 		sourcemap: false,
 		chunkSizeWarningLimit: 1000,
 		// Garante que o build seja compatível com a Vercel
-		target: 'es2015'
+		target: 'es2015',
+		// Configurações para assets
+		assetsDir: 'assets',
+		// Garante que o manifest seja copiado
+		copyPublicDir: true
 	}
 });
