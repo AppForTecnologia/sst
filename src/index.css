@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base Palette */
+    --background: 215 28% 17%; /* Azul escuro profundo */
+    --foreground: 210 40% 98%; /* Branco suave para texto principal */
+
+    --card: 215 28% 22%; /* Um tom de azul ligeiramente mais claro para cards */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 215 28% 15%; /* Um pouco mais escuro para popovers */
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary Colors (Verde Água) */
+    --primary: 173 58% 39%; /* Verde água escuro para ações principais */
+    --primary-foreground: 210 40% 98%; /* Texto claro sobre o verde */
+    
+    /* Secondary Colors (Azul Acinzentado) */
+    --secondary: 215 20% 35%; /* Azul acinzentado para ações secundárias */
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted & Accent */
+    --muted: 215 20% 25%; /* Um tom mais sutil para fundos de hover */
+    --muted-foreground: 215 25% 65%; /* Texto silenciado, como placeholders */
+
+    --accent: 173 58% 45%; /* Um verde água um pouco mais vibrante para destaques */
+    --accent-foreground: 210 40% 98%;
+
+    /* Other standard colors */
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 28% 25%; /* Borda sutil */
+    --input: 215 28% 22%; /* Fundo de input igual ao card */
+    --ring: 173 58% 50%; /* Cor do anel de foco */
+
+    --radius: 0.5rem;
+    
+    /* Custom Gradient & Specific Colors */
+    --color-sidebar-background: 215 28% 15%; /* O tom mais escuro para a sidebar */
+    --color-page-background: 215 28% 17%; /* O fundo principal da página */
+    
+    --color-logo-primary: 173 95% 60%; /* Verde água bem vibrante para o ícone */
+    --color-logo-text: 210 40% 98%;
+    --color-menu-icon-default: 173 40% 70%;
+
+    /* Title & Text Colors */
+    --title-foreground: 210 40% 98%; /* Branco suave para títulos principais */
+    --subtitle-foreground: 215 25% 80%; /* Um cinza-azulado claro para subtítulos */
+    --text-muted: 215 25% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-title-foreground;
+  }
+  p, span, div {
+     /* Garante que o texto geral tenha bom contraste */
+  }
+}
+
+@layer components {
+    .text-gradient-primary {
+        @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+    }
+}
+
+/* Custom styles for select component options */
+select option {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--input));
+}
+
+select:focus-visible option {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}

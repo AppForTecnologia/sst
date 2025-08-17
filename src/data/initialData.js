@@ -1,0 +1,85 @@
+
+export const initialData = {
+  companies: [
+    { id: 1, name: 'Construtora Alfa', cnpj: '11.111.111/0001-11', cnae: '4120-4/00', risk_grade: 3, segment_id: 1, createdAt: new Date().toISOString() },
+    { id: 2, name: 'Indústria Beta', cnpj: '22.222.222/0001-22', cnae: '2539-0/01', risk_grade: 4, segment_id: 2, createdAt: new Date().toISOString() },
+  ],
+  employees: [
+    { id: 1, name: 'João da Silva', cpf: '111.111.111-11', companyId: 1, sectorId: 1, functionId: 1, createdAt: new Date().toISOString() },
+    { id: 2, name: 'Maria Oliveira', cpf: '222.222.222-22', companyId: 2, sectorId: 3, functionId: 3, createdAt: new Date().toISOString() },
+  ],
+  segments: [
+    { id: 1, name: 'Construção Civil' },
+    { id: 2, name: 'Indústria Metalúrgica' },
+    { id: 3, name: 'Escritório Administrativo' },
+    { id: 4, name: 'Serviços de Saúde' },
+  ],
+  dangerGroups: [
+    { id: 1, name: 'Riscos Físicos', description: 'Agentes físicos presentes no ambiente de trabalho', color: '#3B82F6', createdAt: new Date().toISOString() },
+    { id: 2, name: 'Riscos Químicos', description: 'Substâncias, compostos ou produtos químicos', color: '#EF4444', createdAt: new Date().toISOString() },
+    { id: 3, name: 'Riscos Biológicos', description: 'Microorganismos, bactérias, vírus, fungos', color: '#10B981', createdAt: new Date().toISOString() },
+    { id: 4, name: 'Riscos Ergonômicos', description: 'Fatores que podem afetar a integridade física e mental', color: '#F59E0B', createdAt: new Date().toISOString() },
+    { id: 5, name: 'Riscos de Acidentes', description: 'Situações de risco que podem causar lesões', color: '#8B5CF6', createdAt: new Date().toISOString() },
+  ],
+  dangers: [
+    { id: 1, name: 'Corte/Perfuração', group_id: 5, description: 'Lesões causadas por objetos cortantes ou perfurantes' },
+    { id: 2, name: 'Esmagamento', group_id: 5, description: 'Lesões por compressão ou esmagamento' },
+    { id: 3, name: 'Queimadura Química', group_id: 2, description: 'Lesões causadas por substâncias químicas' },
+    { id: 4, name: 'Inalação de Vapores', group_id: 2, description: 'Exposição respiratória a vapores tóxicos' },
+    { id: 5, name: 'Perda Auditiva', group_id: 1, description: 'Danos ao sistema auditivo por ruído excessivo' },
+    { id: 6, name: 'LER/DORT', group_id: 4, description: 'Lesões por esforços repetitivos' },
+    { id: 7, name: 'Infecção', group_id: 3, description: 'Contaminação por agentes biológicos' },
+    { id: 8, name: 'Radiação Ionizante', group_id: 1, description: 'Exposição à radiação prejudicial' },
+  ],
+  dangerSources: [
+    { id: 1, name: 'Máquinas e Equipamentos' },
+    { id: 2, name: 'Ferramentas Manuais' },
+    { id: 3, name: 'Produtos Químicos' },
+    { id: 4, name: 'Ruído' },
+    { id: 5, name: 'Mobiliário' },
+    { id: 6, name: 'Equipamentos de Informática' },
+    { id: 7, name: 'Material Biológico' },
+    { id: 8, name: 'Radiação' },
+  ],
+  protectionMeasures: [
+    { id: 1, name: 'Protetor Auricular' },
+    { id: 2, name: 'Luvas de Segurança' },
+    { id: 3, name: 'Óculos de Proteção' },
+    { id: 4, name: 'Treinamento de Segurança' },
+    { id: 5, name: 'Ventilação Local Exaustora' },
+    { id: 6, name: 'Pausas Regulares' },
+  ],
+  injuries: [
+    { id: 1, name: 'Corte em Mãos' },
+    { id: 2, name: 'Perda Auditiva Induzida por Ruído' },
+    { id: 3, name: 'Tendinite' },
+    { id: 4, name: 'Dermatite de Contato' },
+    { id: 5, name: 'Hepatite B' },
+  ],
+  sectors: [
+    { id: 1, company_id: 1, name: 'Canteiro de Obras' },
+    { id: 2, company_id: 1, name: 'Escritório' },
+    { id: 3, company_id: 2, name: 'Produção' },
+    { id: 4, company_id: 2, name: 'Almoxarifado' },
+  ],
+  functions: [
+    { id: 1, company_id: 1, name: 'Pedreiro' },
+    { id: 2, company_id: 1, name: 'Engenheiro Civil' },
+    { id: 3, company_id: 2, name: 'Soldador' },
+    { id: 4, company_id: 2, name: 'Operador de Máquina' },
+  ],
+  nrs: [
+    { id: 1, number: '01', name: 'Disposições Gerais e Gerenciamento de Riscos Ocupacionais', type: 'Geral', description: 'Estabelece as disposições gerais, o campo de aplicação, os termos e as definições comuns às Normas Regulamentadoras - NR relativas à segurança e saúde no trabalho e as diretrizes e os requisitos para o gerenciamento de riscos ocupacionais e as medidas de prevenção em Segurança e Saúde no Trabalho - SST.' },
+    { id: 2, number: '06', name: 'Equipamento de Proteção Individual - EPI', type: 'Especial', description: 'Estabelece os requisitos para aprovação, comercialização, fornecimento e utilização de Equipamentos de Proteção Individual - EPI.' },
+    { id: 3, number: '17', name: 'Ergonomia', type: 'Especial', description: 'Visa a estabelecer as diretrizes e os requisitos que permitam a adaptação das condições de trabalho às características psicofisiológicas dos trabalhadores, de modo a proporcionar conforto, segurança, saúde e desempenho eficiente no trabalho.' },
+  ],
+  nrDetails: [
+    { id: 1, nr_id: 1, danger_id: 1, injury_ids: [1], protection_measure_ids: [2, 3] },
+    { id: 2, nr_id: 2, danger_id: 5, injury_ids: [2], protection_measure_ids: [1] },
+  ],
+  segmentNrAssociations: [
+    { id: 1, segment_id: 1, danger_source_id: 1, nr_id: 1, danger_id: 1 },
+    { id: 2, segment_id: 2, danger_source_id: 4, nr_id: 2, danger_id: 5 },
+  ],
+  inventories: [],
+};
