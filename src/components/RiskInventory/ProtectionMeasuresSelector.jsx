@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Select } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Shield } from 'lucide-react';
+import { Shield, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
 
 /**
- * Componente simplificado para selecionar medidas de proteção com status de implementação
- * Interface mais dinâmica e fácil de usar
+ * Componente para selecionar medidas de proteção com status de implementação
+ * Interface compacta com dropdown e seleção direta
  */
 export function ProtectionMeasuresSelector({ 
   availableMeasures, 
   selectedMeasures, 
   onChange 
 }) {
-  
+  const [isOpen, setIsOpen] = useState(false);
+
   /**
    * Atualiza o status de implementação de uma medida
    * @param {number} measureId - ID da medida
@@ -86,69 +90,178 @@ export function ProtectionMeasuresSelector({
     return measure ? measure.implementationStatus : '';
   };
 
+  /**
+   * Verifica se uma medida está selecionada
+   * @param {number} measureId - ID da medida
+   * @returns {boolean} - true se selecionada
+   */
+  const isMeasureSelected = (measureId) => {
+    return selectedMeasures.some(m => m.measureId === measureId);
+  };
+
+  /**
+   * Remove uma medida selecionada
+   * @param {number} measureId - ID da medida
+   */
+  const removeMeasure = (measureId) => {
+    onChange(selectedMeasures.filter(m => m.measureId !== measureId));
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="text-sm text-subtitle-foreground mb-4">
-        Selecione o status de implementação para cada medida de proteção:
-      </div>
-      
-      {/* Lista de todas as medidas disponíveis */}
-      <div className="space-y-3">
-        {availableMeasures.map((measure) => {
-          const currentStatus = getCurrentStatus(measure.id);
+    <div className="space-y-4">
+      {/* Botão de Seleção */}
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className="w-full justify-between"
+          >
+            <Shield className="h-4 w-4 mr-2" />
+            {selectedMeasures.length === 0 
+              ? "Selecionar medidas de proteção..." 
+              : `${selectedMeasures.length} medida${selectedMeasures.length !== 1 ? 's' : ''} selecionada${selectedMeasures.length !== 1 ? 's' : ''}`
+            }
+            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        
+        <PopoverContent className="w-96 p-0" align="start">
+          <div className="p-3 border-b">
+            <h4 className="font-medium text-sm">Medidas de Proteção</h4>
+            <p className="text-xs text-muted-foreground mt-1">
+              Selecione o status para cada medida
+            </p>
+          </div>
           
-          return (
-            <motion.div
-              key={measure.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-muted/50 transition-colors"
-            >
-              {/* Nome da Medida */}
-              <div className="flex items-center gap-3 flex-1">
-                <Shield className="h-4 w-4 text-blue-500 shrink-0" />
-                <span className="font-medium text-foreground">
-                  {measure.name}
-                </span>
-              </div>
-
-              {/* Status Select */}
-              <div className="flex items-center gap-3">
-                <Select
-                  value={currentStatus}
-                  onChange={(e) => handleStatusChange(measure.id, e.target.value)}
-                  className="w-40"
+          <div className="max-h-64 overflow-y-auto">
+            {availableMeasures.map((measure) => {
+              const currentStatus = getCurrentStatus(measure.id);
+              const isSelected = isMeasureSelected(measure.id);
+              
+              return (
+                <div
+                  key={measure.id}
+                  className="flex items-center justify-between p-3 border-b last:border-b-0 hover:bg-muted/50"
                 >
-                  <option value="">Selecionar</option>
-                  <option value="yes">Sim</option>
-                  <option value="no">Não</option>
-                  <option value="not_applicable">Não Aplicável</option>
-                </Select>
+                  {/* Checkbox e Nome */}
+                  <div className="flex items-center gap-3 flex-1">
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          // Adiciona com status padrão 'pending'
+                          onChange([...selectedMeasures, {
+                            measureId: measure.id,
+                            measureName: measure.name,
+                            implementationStatus: 'pending'
+                          }]);
+                        } else {
+                          // Remove
+                          removeMeasure(measure.id);
+                        }
+                      }}
+                    />
+                    <Shield className="h-4 w-4 text-blue-500 shrink-0" />
+                    <span className="text-sm font-medium">
+                      {measure.name}
+                    </span>
+                  </div>
 
-                {/* Badge de Status */}
-                {currentStatus && (
+                  {/* Status Select */}
+                  {isSelected && (
+                    <Select
+                      value={currentStatus}
+                      onChange={(e) => handleStatusChange(measure.id, e.target.value)}
+                      className="w-32"
+                    >
+                      <option value="pending">Pendente</option>
+                      <option value="yes">Sim</option>
+                      <option value="no">Não</option>
+                      <option value="not_applicable">N/A</option>
+                    </Select>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* Lista de Medidas Selecionadas */}
+      {selectedMeasures.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-foreground">
+            Medidas Selecionadas ({selectedMeasures.length})
+          </h4>
+          
+          {selectedMeasures.map((selectedMeasure) => {
+            const measure = availableMeasures.find(m => m.id === selectedMeasure.measureId);
+            if (!measure) return null;
+
+            return (
+              <motion.div
+                key={selectedMeasure.measureId}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex items-center justify-between p-3 border rounded-lg bg-card"
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <Shield className="h-4 w-4 text-blue-500" />
+                  <span className="font-medium text-foreground">
+                    {measure.name}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {/* Status Select */}
+                  <Select
+                    value={selectedMeasure.implementationStatus}
+                    onChange={(e) => handleStatusChange(selectedMeasure.measureId, e.target.value)}
+                    className="w-32"
+                  >
+                    <option value="pending">Pendente</option>
+                    <option value="yes">Sim</option>
+                    <option value="no">Não</option>
+                    <option value="not_applicable">N/A</option>
+                  </Select>
+
+                  {/* Badge de Status */}
                   <Badge 
                     variant="outline" 
-                    className={`${getStatusColor(currentStatus)} shrink-0`}
+                    className={`${getStatusColor(selectedMeasure.implementationStatus)} shrink-0`}
                   >
-                    {getStatusText(currentStatus)}
+                    {getStatusText(selectedMeasure.implementationStatus)}
                   </Badge>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
+
+                  {/* Botão Remover */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeMeasure(selectedMeasure.measureId)}
+                    className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                    title="Remover medida"
+                  >
+                    ×
+                  </Button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Resumo das Seleções */}
       {selectedMeasures.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 p-4 bg-muted/30 rounded-lg border"
+          className="mt-4 p-4 bg-muted/30 rounded-lg border"
         >
           <h4 className="text-sm font-medium text-foreground mb-3">
-            Resumo das Seleções ({selectedMeasures.length} medida{selectedMeasures.length !== 1 ? 's' : ''})
+            Resumo das Seleções
           </h4>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -181,11 +294,11 @@ export function ProtectionMeasuresSelector({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-8 text-muted-foreground"
+          className="text-center py-6 text-muted-foreground"
         >
-          <Shield className="h-12 w-12 mx-auto mb-3 opacity-50" />
+          <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm">Nenhuma medida selecionada</p>
-          <p className="text-xs">Use os selects acima para definir o status de cada medida</p>
+          <p className="text-xs">Clique no botão acima para selecionar medidas</p>
         </motion.div>
       )}
     </div>
