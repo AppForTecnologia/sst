@@ -5,11 +5,12 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:render": "npm install && vite build",
+    "build": "npx vite build",
+    "build:render": "npm install && npx vite build",
+    "build:render:script": "node build-render.js",
     "build:vercel": "node vercel-build.js",
-    "build:with-llms": "node tools/generate-llms.js && vite build",
-    "preview": "vite preview"
+    "build:with-llms": "node tools/generate-llms.js && npx vite build",
+    "preview": "npx vite preview"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.2.1",

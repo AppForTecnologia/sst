@@ -3,7 +3,7 @@ services:
     name: sst-sistema
     env: node
     plan: free
-    buildCommand: npm run build:render
+    buildCommand: npm run build:render:script
     startCommand: npm run preview
     envVars:
       - key: NODE_ENV
@@ -17,3 +17,4 @@ services:
         - vite.config.js
         - tailwind.config.js
         - postcss.config.js
+        - build-render.js
